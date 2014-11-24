@@ -22,6 +22,7 @@
 class Twig_Loader_Array implements Twig_LoaderInterface, Twig_ExistsLoaderInterface
 {
     protected $templates = array();
+    private $last_used_template;
 
     /**
      * Constructor.
@@ -56,7 +57,22 @@ class Twig_Loader_Array implements Twig_LoaderInterface, Twig_ExistsLoaderInterf
             throw new Twig_Error_Loader(sprintf('Template "%s" is not defined.', $name));
         }
 
+        $this->last_used_template = $name;
+
         return $this->templates[$name];
+    }
+
+    /**
+     * Returns the name of template that was lastly parsed before
+     * this method was called.
+     * This may be useful when, for instance, you need to know the
+     * name of the template where your custom function was called from.
+     *
+     * @return string The template name
+     */
+    public function getLastLoadedTemplateName()
+    {
+        return $this->last_used_template;
     }
 
     /**
@@ -76,6 +92,8 @@ class Twig_Loader_Array implements Twig_LoaderInterface, Twig_ExistsLoaderInterf
         if (!isset($this->templates[$name])) {
             throw new Twig_Error_Loader(sprintf('Template "%s" is not defined.', $name));
         }
+
+        $this->last_used_template = $name;
 
         return $this->templates[$name];
     }
